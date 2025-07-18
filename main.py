@@ -4,6 +4,8 @@ import asyncio
 import subprocess
 from typing import Optional
 import os
+import re
+import shlex
 
 # Create the MCP server
 mcp = FastMCP("Setup MCP Server")
@@ -19,9 +21,17 @@ def get_setup_instructions() -> str:
     """
     if not os.path.exists(SETUP_MD_PATH):
         return "SETUP.md file not found."
+    
     try:
         with open(SETUP_MD_PATH, "r", encoding="utf-8") as f:
-            return f.read()
+            content = f.read()
+            if not content.strip():
+                return "SETUP.md file is empty."
+            return content
+    except UnicodeDecodeError:
+        return "Error: SETUP.md file contains invalid UTF-8 encoding."
+    except PermissionError:
+        return "Error: Permission denied reading SETUP.md file."
     except Exception as e:
         return f"Error reading SETUP.md: {str(e)}"
 
@@ -35,8 +45,40 @@ async def terminal_tool(command: str, timeout: Optional[int] = 30, ctx: Optional
     Returns:
         A dictionary with 'stdout', 'stderr', and 'exit_code'.
     """
-    if not command.strip():
-        return {"isError": True, "content": [{"type": "text", "text": "No command provided."}]}
+    # Input validation
+    if not command or not command.strip():
+        return {
+            "stdout": "",
+            "stderr": "No command provided.",
+            "exit_code": 1
+        }
+    
+    # Basic security checks - block dangerous commands
+    dangerous_patterns = [
+        r'rm\s+-rf\s+/',  # rm -rf /
+        r':\(\)\{\s*:\|:\&\s*\}\s*;\s*:',  # fork bomb
+        r'>/dev/sd[a-z]',  # writing to disk devices
+        r'dd\s+if=.*of=/dev/',  # dd to devices
+        r'mkfs\.',  # filesystem creation
+        r'fdisk\s+/dev/',  # disk partitioning
+    ]
+    
+    for pattern in dangerous_patterns:
+        if re.search(pattern, command, re.IGNORECASE):
+            return {
+                "stdout": "",
+                "stderr": "Command blocked for security reasons.",
+                "exit_code": 1
+            }
+    
+    # Validate timeout
+    if timeout is not None and (timeout <= 0 or timeout > 300):
+        return {
+            "stdout": "",
+            "stderr": "Timeout must be between 1 and 300 seconds.",
+            "exit_code": 1
+        }
+    
     try:
         proc = await asyncio.create_subprocess_shell(
             command,
@@ -47,14 +89,23 @@ async def terminal_tool(command: str, timeout: Optional[int] = 30, ctx: Optional
             stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout)
         except asyncio.TimeoutError:
             proc.kill()
-            return {"isError": True, "content": [{"type": "text", "text": f"Command timed out after {timeout} seconds."}]}
+            return {
+                "stdout": "",
+                "stderr": f"Command timed out after {timeout} seconds.",
+                "exit_code": 124
+            }
+        
         return {
             "stdout": stdout.decode("utf-8", errors="replace"),
             "stderr": stderr.decode("utf-8", errors="replace"),
             "exit_code": proc.returncode,
         }
     except Exception as e:
-        return {"isError": True, "content": [{"type": "text", "text": f"Error executing command: {str(e)}"}]}
+        return {
+            "stdout": "",
+            "stderr": f"Error executing command: {str(e)}",
+            "exit_code": 1
+        }
 
 if __name__ == "__main__":
     mcp.run()
