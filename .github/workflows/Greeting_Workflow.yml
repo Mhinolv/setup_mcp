@@ -2,7 +2,7 @@ name: Greeting Worklow
 
 on: push
 jobs:
-  first_job:
+  first-job:
     runs-on: ubuntu-latest
     steps:
       - name: Print Greeting

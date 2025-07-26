@@ -3,7 +3,7 @@ name: Push Test
 on: [push, workflow_dispatch]
 
 jobs:
-  push_job:
+  push-job:
     runs-on: ubuntu-latest
     steps:
       - name: Get Code
@@ -20,7 +20,7 @@ jobs:
         run: uv run main.py
 
   success_message:
-    needs: push_job
+    needs: push-job
     runs-on: ubuntu-latest
     steps:
       - name: Success

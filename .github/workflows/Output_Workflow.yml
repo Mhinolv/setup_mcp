@@ -2,7 +2,7 @@ name: Output Information
 on: [push, workflow_dispatch]
 
 jobs:
-  info:
+  first-job:
     runs-on: ubuntu-latest
     steps:
       - name: Output Github Context
