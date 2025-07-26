@@ -8,13 +8,13 @@ jobs:
     steps:
       - name: Get Code
         uses: actions/checkout@v4
-      - name: Run Code
+      - name: Install Python
         uses: actions/setup-python@v5
         with:
             python-version: '3.13'
       - name: Install UV
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
-      - name: Install Deps
+      - name: Install Dependencies
         run: uv sync
-      - name: Run Code
+      - name: Run Scripts
         run: uv run main.py
