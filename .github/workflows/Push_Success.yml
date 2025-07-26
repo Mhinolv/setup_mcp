@@ -1,0 +1,14 @@
+name: Push Message
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  push-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo Success
+        run: echo 'This was a triumph!'

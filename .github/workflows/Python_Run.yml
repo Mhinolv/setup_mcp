@@ -1,4 +1,4 @@
-name: Push Test
+name: Python Run
 
 on:
   pull_request:
