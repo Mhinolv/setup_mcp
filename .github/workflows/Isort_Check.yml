@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  first-job:
+  isort-run:
     runs-on: ubuntu-latest
     steps:
         - name: Checkout Code
@@ -21,7 +21,7 @@ jobs:
           run: uv sync
         - name: Validate Deps
           run: uv pip list
-        - name: Job Information
-          run: echo "${{ toJson(job) }}"
+        - name: Validate iSort
+          run: uv run isort --version
         - name: Run iSort
-          run: isort . --check --diff
+          run: uv run isort . --check --diff
