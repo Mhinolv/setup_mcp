@@ -12,4 +12,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
             python-version: '3.13'
-      - run: python main.py
+      - name: Install Deps
+        run: uv sync
+      - name: Run Code
+        run: uv run main.py
