@@ -23,5 +23,7 @@ jobs:
           run: source .venv/bin/activate
         - name: Install Dependencies
           run: uv sync
-        - name: Review Dep List
-          run: uv pip list
+        - name: Validate Venv
+          run: echo $VIRTUAL_ENV
+        - name: Job Information
+          run: echo "${{ toJson(steps) }}"
