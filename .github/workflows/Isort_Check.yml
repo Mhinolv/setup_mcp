@@ -1,0 +1,27 @@
+name: iSort Check
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+  workflow_dispatch:
+
+jobs:
+  first-job:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout Code
+          uses: actions/checkout@v4
+        - name: Install Python
+          uses: actions/setup-python@v5
+          with:
+            python-version: '3.13'
+        - name: Install UV
+          run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        - name: Install Dependencies
+          run: uv sync
+        - name: Validate Deps
+          run: uv pip list
+        - name: Job Information
+          run: echo "${{ toJson(job) }}"
+        - name: Run iSort
+          run: isort . --check --diff
