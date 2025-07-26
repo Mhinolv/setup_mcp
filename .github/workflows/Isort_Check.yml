@@ -17,15 +17,11 @@ jobs:
             python-version: '3.13'
         - name: Install UV
           run: curl -LsSf https://astral.sh/uv/install.sh | sh
-        - name: Create Venv
-          run: uv venv
-        - name: Check Venv
-          run: ls -aF
-        - name: Activate Venv
-          run: source .venv/bin/activate
         - name: Install Dependencies
           run: uv sync
-        - name: Validate Venv
-          run: echo $VIRTUAL_ENV
+        - name: Validate Deps
+          run: uv pip list
         - name: Job Information
           run: echo "${{ toJson(job) }}"
+        - name: Run iSort
+          run: isort . --check --diff
