@@ -18,3 +18,10 @@ jobs:
         run: uv sync
       - name: Run Scripts
         run: uv run main.py
+
+  success_message:
+    needs: push_job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Success
+        run: echo "This was a good run!"
