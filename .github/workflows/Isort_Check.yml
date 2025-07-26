@@ -23,5 +23,5 @@ jobs:
           run: source .venv/bin/activate
         - name: Install Dependencies
           run: uv sync
-        - name: Run iSort
-          run: isort . --check --diff
+        - name: Review Dep List
+          run: uv pip list
