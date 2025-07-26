@@ -1,6 +1,9 @@
 name: Push Test
 
-on: [push, workflow_dispatch]
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+  workflow_dispatch:
 
 jobs:
   push-job:

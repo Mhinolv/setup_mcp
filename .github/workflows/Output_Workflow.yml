@@ -1,5 +1,9 @@
 name: Output Information
-on: [push, workflow_dispatch]
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+  workflow_dispatch:
 
 jobs:
   first-job:
