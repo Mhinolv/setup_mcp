@@ -23,7 +23,5 @@ jobs:
           run: source .venv/bin/activate
         - name: Install Dependencies
           run: uv sync
-        - name: Validate iSort
-          run: isort --version
         - name: Run iSort
           run: isort . --check --diff
