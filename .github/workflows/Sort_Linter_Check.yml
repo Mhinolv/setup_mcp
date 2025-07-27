@@ -25,6 +25,7 @@ jobs:
           run: uv run isort . --check --diff --verbose
 
   ruff-run:
+    needs: isort-run
     runs-on: ubuntu-latest
     steps:
       - name: Install Python
