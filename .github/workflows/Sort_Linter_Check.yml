@@ -23,3 +23,20 @@ jobs:
           run: uv pip list
         - name: Run iSort
           run: uv run isort . --check --diff --verbose
+
+  ruff-run:
+    needs: isort-run
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install UV
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Install Dependencies
+        run: uv sync
+      - name: Run iSort
+        run: uv run ruff check . --verbose
