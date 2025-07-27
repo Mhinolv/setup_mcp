@@ -28,6 +28,8 @@ jobs:
     needs: isort-run
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
       - name: Install Python
         uses: actions/setup-python@v5
         with:
